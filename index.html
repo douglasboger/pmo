@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta CNPJ</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        label, input { font-size: 1em; }
+        input { padding: 5px; }
+        button { padding: 5px 10px; font-size: 1em; }
+        #result { margin-top: 20px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>Consulta CNPJ</h1>
+    <label for="cnpj">CNPJ:</label>
+    <input type="text" id="cnpj" placeholder="Digite o CNPJ" />
+    <button id="consultar">Consultar</button>
+    <pre id="result"></pre>
+    <script>
+        document.getElementById('consultar').addEventListener('click', async () => {
+            const cnpj = document.getElementById('cnpj').value.replace(/\D/g, '');
+            if (!cnpj) {
+                alert('Por favor, informe um CNPJ válido.');
+                return;
+            }
+            const result = document.getElementById('result');
+            result.textContent = 'Consultando...';
+            try {
+                const response = await fetch(`https://publica.cnpj.ws/cnpj/${cnpj}`);
+                if (!response.ok) {
+                    throw new Error('Erro ao consultar o CNPJ');
+                }
+                const data = await response.json();
+                result.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                result.textContent = '';
+                alert('Não foi possível consultar o CNPJ.');
+                console.error(err);
+            }
+        });
+    </script>
+</body>
+</html>
